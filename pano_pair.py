@@ -5,7 +5,7 @@ import utils
 import glob
 from PIL import Image
 
-def combine(image1, image2, detector, valid_ratio = 0.2, display = False):
+def combine(image1, image2, detector, valid_ratio = 0.2, use_affine = False, display = False):
 
     #detector = cv2.ORB_create(nfeatures=10000, score = cv2.ORB_FAST_SCORE) #SURF showed best results
     #detector = cv2.xfeatures2d.SIFT_create(nfeatures=10000)
@@ -52,8 +52,8 @@ def combine(image1, image2, detector, valid_ratio = 0.2, display = False):
     src_pts = np.float32([ kp2[m.queryIdx].pt for m in matches ]).reshape(-1,1,2)
     dst_pts = np.float32([ kp1[m.trainIdx].pt for m in matches ]).reshape(-1,1,2)
 
-    # A = cv2.estimateRigidTransform(src_pts,dst_pts,fullAffine=False) // just use affine transform
-    A = None
+    A = cv2.estimateRigidTransform(src_pts,dst_pts,fullAffine=False) if use_affine else None 
+    
     if A is None:
         HomogResult = cv2.findHomography(src_pts,dst_pts,method=cv2.RANSAC)
         H = HomogResult[0]

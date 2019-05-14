@@ -58,13 +58,13 @@ def warpPerspectiveWithPadding(image,transformation):
     return result
 
 
-def changePerspective(images, dataMatrix, save_dir, scale):
+def changePerspective(images, dataMatrix, save_dir, scale, use_imu=True):
     for i in range(0,len(images)):
         image = cv2.imread(images[i])
         image = cv2.resize(image, (0,0), fx = scale, fy = scale)
         # image = image[::2, ::2, :]
 
         M = computeUnRotMatrix(dataMatrix[i,:])
-        correctedImage = warpPerspectiveWithPadding(image,M)
+        correctedImage = warpPerspectiveWithPadding(image,M) if use_imu else image
 
         cv2.imwrite(os.path.join(save_dir, str(i).zfill(4) + ".png"), correctedImage)

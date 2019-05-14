@@ -15,6 +15,8 @@ parser.add_argument("--image_dir", type=str, default="./datasets/images", help="
 parser.add_argument("--image_data_fn", type=str, default='./datasets/image_data.txt', help="size of each image batch")
 parser.add_argument("--resize_scale", type=float, default=0.5, help="downsampling scale")
 parser.add_argument("--valid_ratio", type=float, default=0.2, help="valid ratio for valid matching top 2")
+parser.add_argument("--use_imu",  action = 'store_false', help="if use IMU")
+parser.add_argument("--use_affine", action = 'store_true', help="if use affine")
 
 
 
@@ -23,7 +25,7 @@ def main(opt):
     all_images, data_matrix = dataset.prepare(opt.image_data_fn, opt.image_dir, opt.workspace_dir)
 
     print ('use IMU to de-transform images...')
-    geometry.changePerspective(all_images, data_matrix, opt.workspace_dir, opt.resize_scale)
+    geometry.changePerspective(all_images, data_matrix, opt.workspace_dir, opt.resize_scale, opt.use_imu)
 
     print ('stitching image')
     image_list = sorted(glob.glob(os.path.join(opt.workspace_dir, "*.png")))
@@ -33,7 +35,7 @@ def main(opt):
         image = cv2.imread(image_list[i])
 
         try:
-            result = pano_pair.combine(result, image, detector)
+            result = pano_pair.combine(result, image, detector, opt.valid_ratio, opt.use_affine)
             cv2.imwrite(os.path.join(opt.results_dir, "int_res_%d.png"%(i)), result)
             print ("Stitched " + str(i + 1) + " Images")
 
