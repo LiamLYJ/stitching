@@ -15,7 +15,7 @@ parser.add_argument("--image_dir", type=str, default="./datasets/images", help="
 parser.add_argument("--image_data_fn", type=str, default='./datasets/image_data.txt', help="size of each image batch")
 parser.add_argument("--resize_scale", type=float, default=0.5, help="downsampling scale")
 parser.add_argument("--valid_ratio", type=float, default=0.2, help="valid ratio for valid matching top 2")
-parser.add_argument("--use_imu",  action = 'store_false', help="if use IMU")
+parser.add_argument("--use_imu",  action = 'store_true', help="if use IMU")
 parser.add_argument("--use_affine", action = 'store_true', help="if use affine")
 
 
